@@ -1,0 +1,129 @@
+{% macro alert(label, name, dismissible=true) %}
+<div class="alert alert-{{name}}{{dismissible ? " alert-dismissible"}}" role="alert">
+  {% if dismissible %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  {% endif %} 
+  {{label}}  
+</div>
+{% endmacro %}
+
+{% macro btn(label, name) %}
+<button type="button" class="btn btn-{{name|default('default')}}">{{label}}</button>
+{% endmacro %}
+
+{% macro icon(name, ext) %}
+<span class="glyphicon glyphicon-{{name|default('ok')}}" {{ext}}></span>
+{% endmacro %}
+
+{% macro input(label, name, value, type, labelclass, ext) %}
+<label for="label{{ name|capitalize }}"{% if labelclass %} class="{{ labelclass }}"{% endif %}>{{ label|capitalize }}</label>
+<input id="{{ name }}" type="{{ type|default('text') }}" name="{{ name }}" value="{{ value }}"  placeholder="{{ label|capitalize }}" class="form-control" {{ext}}>
+{% endmacro %}
+
+{% macro static(label, value) %}
+<label class="col-sm-2 control-label">{{label}}</label>
+<div class="col-sm-10">
+  <p class="form-control-static">{{value}}</p>
+</div>
+{% endmacro %}
+
+{% macro input_addon(label, name, value, type, prefix, suffix, class) %}
+<div class="{{ class|default('input-group') }}">
+  <span class="input-group-addon" id="basic-addon1">{{prefix}}</span>
+  <input id="{{ name }}" type="{{ type|default('text') }}" name="{{ name }}" value="{{ value }}" class="form-control" placeholder="{{ label|capitalize }}">
+  <span class="input-group-addon" id="basic-addon1">{{suffix}}</span>
+</div>
+{% endmacro %}
+
+{% macro textarea(label, name, value, rows) %}
+  <textarea name={{ name }} id={{ name }} rows="{{ rows }}" placeholder="{{ label|capitalize }}" class="form-control">{{ value }}</textarea>
+{% endmacro %}
+
+{% macro radiocheck(label, name, value, id="1", type="checkbox", checked=false, disabled=false) %}
+<div class="{{type}}{{ disabled ? " disabled" }}">
+  <label>
+    <input type="{{type}}" name="{{name}}" id="{{id}}" value="{{value}}"{{ checked ? " checked" }}{{ disabled ? " disabled" }}>
+      {{label}}
+  </label>
+</div>
+{% endmacro %}
+
+{% macro radiocheck_inline(label, name, value, id="1", type="checkbox", checked=false, disabled=false) %}
+<label class="{{ type }}-inline">
+  <input type="{{ type }}" name="{{ name }}" id="{{ id }}" value="{{ value }}"{{ checked ? " checked" }}{{ disabled ? " disabled" }}> {{ label }}
+</label>
+{% endmacro %}
+
+{% macro nav(logo,theme,ext,menu1,menu2,menu3) %}
+<nav class="navbar navbar-{{theme|default('default')}}{{ ext ? " navbar-"~ext }}">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">{{logo|default('Brand')}}</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      {{ menu1 }} 
+      {{ menu2 }}
+      {{ menu3 }}
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>  
+{% endmacro %}
+
+{% macro nav_menu(menu,ext) %}
+<ul class="nav navbar-nav{{-ext ? " navbar-"~ext-}}">
+  {%-for label,item in menu-%} 
+    <li {% if (item.active) or (item.child is iterable) %} class="{%-if item.child is iterable-%}dropdown {%-endif-%}{%-if item.active-%}active{%-endif-%}"
+       {%-endif-%}>
+       <a href="{{-item.url-}}"
+       {%-if item.child is iterable-%}
+          class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+       {%-endif-%}>{{-label-}}
+       {%-if (item.active) or (item.child is iterable)-%}
+        <span class="{%-if item.active-%}sr-only {%-endif-%}
+                    {%-if item.child is iterable-%}caret{%-endif-%}">{%-if item.active-%}(current){%-endif-%}</span>
+       {%-endif-%}
+       </a>
+          {%-if item.child is iterable-%}
+            <ul class="dropdown-menu" role="menu">
+              {%-for lbl,itm in item.child-%}
+                {%-if itm.url == "-"-%}
+                  <li class="divider"></li>
+                {% else %}
+                  <li><a href="{{-itm.url-}}">{{-lbl-}}</a></li>
+                {%-endif-%}
+              {%-endfor-%}
+            </ul>
+          {%-endif-%}
+</li> 
+      {%-endfor-%}
+{% endmacro %}
+
+{% macro nav_form(element,btn) %}
+<form class="navbar-form navbar-left" role="search">
+  <div class="form-group">
+    {% if element is null %}
+      <input type="text" class="form-control" placeholder="Search">
+    {% else %}
+      {% for v in element %}
+        {{ v }}
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% if btn is null %}
+    <button type="submit" class="btn btn-default">Submit</button>
+  {% else %}
+    {% for b in btn %}
+      {{ b }}
+    {% endfor %}
+  {% endif %}
+</form>
+{% endmacro %}
